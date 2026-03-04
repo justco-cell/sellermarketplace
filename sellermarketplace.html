@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SellerMarketplace — Fine Silver Jewelry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --silver: #C0C0C0;
+    --silver-light: #E8E8E8;
+    --silver-dark: #8A8A8A;
+    --obsidian: #0A0A0A;
+    --charcoal: #111111;
+    --dark-mid: #1A1A1A;
+    --accent: #D4AF6E;
+    --accent-light: #F0D090;
+    --text-muted: #888;
+    --border: rgba(192,192,192,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--obsidian); color: var(--silver-light); font-family: 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.93); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px; height: 76px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* LOGO */
+  .logo-link {
+    text-decoration: none; display: flex; align-items: center;
+    gap: 13px; cursor: pointer;
+  }
+  .logo-emblem { width: 44px; height: 44px; flex-shrink: 0; transition: transform 0.45s cubic-bezier(.34,1.56,.64,1); }
+  .logo-link:hover .logo-emblem { transform: rotate(18deg) scale(1.06); }
+  .logo-divider { width: 1px; height: 34px; background: linear-gradient(to bottom, transparent, rgba(192,192,192,0.2), transparent); }
+  .logo-text-wrap { display: flex; flex-direction: column; line-height: 1; }
+  .logo-wordmark {
+    font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    background: linear-gradient(120deg, #F0F0F0 0%, #B8B8B8 55%, #E8E8E8 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    transition: filter 0.3s;
+  }
+  .logo-link:hover .logo-wordmark { filter: brightness(1.15); }
+  .logo-tagline { font-family: 'Montserrat', sans-serif; font-size: 7px; font-weight: 500; letter-spacing: 0.48em; text-transform: uppercase; color: var(--accent); margin-top: 4px; }
+
+  nav { display: flex; gap: 32px; align-items: center; }
+  nav a { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.3s; cursor: pointer; }
+  nav a:hover { color: var(--silver-light); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--silver-light);
+    padding: 8px 20px; font-family: 'Montserrat', sans-serif; font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s;
+  }
+  .cart-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--obsidian); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(192,192,192,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(212,175,110,0.06) 0%, transparent 60%), var(--obsidian);
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(192,192,192,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(192,192,192,0.03) 1px, transparent 1px);
+    background-size: 60px 60px; pointer-events: none;
+  }
+  .hero-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(192,192,192,0.07); animation: rotate-slow 30s linear infinite; }
+  .hero-ring:nth-child(1) { width: 500px; height: 500px; }
+  .hero-ring:nth-child(2) { width: 700px; height: 700px; animation-direction: reverse; animation-duration: 45s; }
+  .hero-ring:nth-child(3) { width: 900px; height: 900px; animation-duration: 60s; }
+  @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; animation: fadeUp 1s ease both; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px,8vw,100px); font-weight: 300; line-height: 1.0; letter-spacing: 0.05em; margin-bottom: 16px; animation: fadeUp 1s 0.15s ease both; }
+  .hero-title em { font-style: italic; background: linear-gradient(135deg, #C0C0C0 0%, #F5F5F5 40%, #A8A8A8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 48px; animation: fadeUp 1s 0.3s ease both; }
+  .hero-cta { display: inline-block; background: var(--accent); color: var(--obsidian); padding: 14px 48px; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.3s; animation: fadeUp 1s 0.45s ease both; }
+  .hero-cta:hover { background: var(--accent-light); transform: translateY(-2px); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* MARQUEE */
+  .marquee-wrap { overflow: hidden; padding: 18px 0; background: var(--charcoal); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .marquee { display: flex; gap: 64px; animation: marquee 25s linear infinite; width: max-content; }
+  .marquee-item { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; color: var(--text-muted); white-space: nowrap; display: flex; align-items: center; gap: 16px; }
+  .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* FILTER */
+  .filter-bar { position: sticky; top: 76px; z-index: 50; background: rgba(17,17,17,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 16px 48px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .filter-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); }
+  .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 18px; font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(212,175,110,0.07); }
+  .search-box { margin-left: auto; display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); padding: 6px 16px; }
+  .search-box input { background: transparent; border: none; outline: none; color: var(--silver-light); font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.1em; width: 180px; }
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  /* CATALOG */
+  .catalog-section { padding: 64px 48px; max-width: 1600px; margin: 0 auto; }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 48px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; }
+  .section-count { font-size: 11px; letter-spacing: 0.2em; color: var(--text-muted); }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 2px; }
+
+  /* CARDS */
+  .product-card { background: var(--charcoal); position: relative; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; }
+  .product-card:hover { transform: translateY(-4px); z-index: 2; }
+  .product-card:hover .card-image-inner { transform: scale(1.05); }
+  .product-card:hover .card-overlay { opacity: 1; }
+  .product-card:hover .add-to-cart { transform: translateY(0); }
+  .card-image { aspect-ratio: 1; overflow: hidden; position: relative; background: var(--dark-mid); }
+  .card-image-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: transform 0.5s ease; }
+  .jewelry-svg { width: 70%; height: 70%; filter: drop-shadow(0 0 20px rgba(192,192,192,0.15)); }
+  .card-badge { position: absolute; top: 12px; left: 12px; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 10px; z-index: 2; }
+  .badge-new { background: var(--accent); color: var(--obsidian); }
+  .badge-sale { background: #8B3A3A; color: #FFD0D0; }
+  .badge-bestseller { background: var(--dark-mid); border: 1px solid var(--accent); color: var(--accent); }
+  .card-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: flex-end; opacity: 0; transition: opacity 0.3s; }
+  .add-to-cart { width: 100%; background: var(--accent); color: var(--obsidian); border: none; padding: 14px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transform: translateY(100%); transition: transform 0.3s ease; }
+  .add-to-cart:hover { background: var(--accent-light); }
+  .card-info { padding: 16px; border-top: 1px solid var(--border); }
+  .card-category { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 400; line-height: 1.3; margin-bottom: 8px; }
+  .card-meta { display: flex; align-items: center; justify-content: space-between; }
+  .card-price { font-size: 15px; font-weight: 500; color: var(--silver); }
+  .card-price-old { font-size: 11px; color: var(--text-muted); text-decoration: line-through; margin-left: 6px; }
+  .card-rating { display: flex; gap: 2px; }
+  .star { color: var(--accent); font-size: 10px; }
+  .star.empty { color: #333; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 24px; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--charcoal); border: 1px solid var(--border); max-width: 800px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow: auto; position: relative; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-image { background: var(--dark-mid); display: flex; align-items: center; justify-content: center; min-height: 400px; }
+  .modal-image svg { width: 65%; height: 65%; filter: drop-shadow(0 0 40px rgba(192,192,192,0.2)); }
+  .modal-details { padding: 48px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-category { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
+  .modal-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; line-height: 1.2; }
+  .modal-price { font-size: 24px; color: var(--silver); }
+  .modal-desc { font-size: 12px; color: var(--text-muted); line-height: 1.9; }
+  .modal-specs { display: flex; flex-direction: column; gap: 8px; }
+  .modal-spec { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+  .modal-spec-key { color: var(--text-muted); letter-spacing: 0.1em; }
+  .modal-spec-val { color: var(--silver-light); }
+  .modal-buy-btn { background: var(--accent); color: var(--obsidian); border: none; padding: 16px; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; margin-top: auto; }
+  .modal-buy-btn:hover { background: var(--accent-light); }
+  .modal-close { position: absolute; top: 20px; right: 20px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal-close:hover { color: var(--silver-light); border-color: var(--silver); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 32px; right: 32px; background: var(--accent); color: var(--obsidian); padding: 14px 24px; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.15em; z-index: 300; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* FADE */
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 64px 48px 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+  .footer-logo-wrap { margin-bottom: 20px; cursor: pointer; display: inline-block; }
+  .footer-brand p { font-size: 12px; color: var(--text-muted); line-height: 1.8; max-width: 280px; }
+  .footer-col h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--silver); margin-bottom: 20px; }
+  .footer-col a { display: block; font-size: 12px; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; cursor: pointer; }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-bottom { border-top: 1px solid var(--border); margin: 0 48px; padding: 20px 0; display: flex; justify-content: space-between; }
+  .footer-bottom p { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; }
+
+  /* TEXT PAGES */
+  .text-page { padding-top: 76px; min-height: 100vh; }
+  .text-page-hero { padding: 80px 48px 60px; border-bottom: 1px solid var(--border); background: linear-gradient(to bottom, var(--charcoal), var(--obsidian)); }
+  .text-page-eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+  .text-page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px,5vw,64px); font-weight: 300; line-height: 1.1; }
+  .text-page-sub { font-size: 13px; color: var(--text-muted); max-width: 560px; line-height: 1.8; margin-top: 16px; }
+  .text-page-body { max-width: 860px; margin: 0 auto; padding: 64px 48px; }
+  .text-section { margin-bottom: 56px; }
+  .text-section h2 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--silver-light); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .text-section p { font-size: 13px; color: var(--text-muted); line-height: 2.0; margin-bottom: 14px; }
+  .text-section ul { list-style: none; padding: 0; }
+  .text-section ul li { font-size: 13px; color: var(--text-muted); line-height: 2.0; padding: 8px 0; border-bottom: 1px solid rgba(192,192,192,0.06); display: flex; gap: 12px; align-items: flex-start; }
+  .text-section ul li::before { content: '◆'; color: var(--accent); font-size: 8px; margin-top: 6px; flex-shrink: 0; }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 2px; margin: 24px 0; }
+  .info-card { background: var(--charcoal); padding: 28px; border: 1px solid var(--border); }
+  .info-card-icon { font-size: 22px; margin-bottom: 12px; }
+  .info-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--silver-light); margin-bottom: 8px; }
+  .info-card p { font-size: 12px; color: var(--text-muted); line-height: 1.8; }
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); cursor: pointer; border: none; background: none; padding: 0; margin-bottom: 32px; font-family: 'Montserrat', sans-serif; transition: gap 0.2s; }
+  .back-btn:hover { gap: 14px; }
+  .size-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  .size-table th { background: var(--dark-mid); color: var(--silver); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .size-table td { padding: 12px 16px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid rgba(192,192,192,0.05); }
+  .size-table tr:hover td { background: rgba(192,192,192,0.03); color: var(--silver-light); }
+  .contact-field { margin-bottom: 20px; }
+  .contact-field label { display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .contact-field input, .contact-field textarea, .contact-field select { width: 100%; background: var(--charcoal); border: 1px solid var(--border); color: var(--silver-light); padding: 12px 16px; font-family: 'Montserrat', sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; resize: vertical; }
+  .contact-field input:focus, .contact-field textarea:focus { border-color: var(--accent); }
+  .contact-field textarea { min-height: 120px; }
+  .submit-btn { background: var(--accent); color: var(--obsidian); border: none; padding: 14px 48px; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+  .submit-btn:hover { background: var(--accent-light); }
+
+  @media (max-width: 768px) {
+    header { padding: 0 20px; } nav { display: none; }
+    .filter-bar { padding: 12px 20px; } .catalog-section { padding: 40px 20px; }
+    footer { grid-template-columns: 1fr; padding: 40px 20px 20px; } .footer-bottom { margin: 0 20px; }
+    .modal { grid-template-columns: 1fr; } .modal-image { min-height: 260px; }
+    .text-page-body { padding: 40px 20px; } .text-page-hero { padding: 60px 20px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo-link" onclick="showPage('home')" title="SellerMarketplace — Home">
+    <svg class="logo-emblem" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lG1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F2F2F2"/>
+          <stop offset="50%" stop-color="#B8B8B8"/>
+          <stop offset="100%" stop-color="#ECECEC"/>
+        </linearGradient>
+        <linearGradient id="lG2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#D4AF6E"/>
+          <stop offset="100%" stop-color="#F0D090"/>
+        </linearGradient>
+        <filter id="lGlow"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#D4AF6E" flood-opacity="0.5"/></filter>
+        <filter id="sShadow"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.4"/></filter>
+      </defs>
+      <!-- Outer ring -->
+      <circle cx="22" cy="22" r="20.5" stroke="url(#lG1)" stroke-width="1" opacity="0.55"/>
+      <!-- Inner gold dashed ring -->
+      <circle cx="22" cy="22" r="17" stroke="url(#lG2)" stroke-width="0.75" stroke-dasharray="3.2 2.5" filter="url(#lGlow)" opacity="0.9"/>
+      <!-- S glyph -->
+      <path d="M11 17C11 14.8 12.6 13 14.8 13H18C19.5 13 20.5 14 20.5 15.5C20.5 17 19.4 18 18 18H14.2C12.8 18 11.5 19.2 11.5 20.8C11.5 22.4 12.7 23.5 14.2 23.5H18C19.5 23.5 20.5 21.8 20.5 21.8"
+        stroke="url(#lG1)" stroke-width="2" stroke-linecap="round" fill="none" filter="url(#sShadow)"/>
+      <!-- M glyph -->
+      <path d="M23 23.5L23 13L27 19.5L31 13L31 23.5"
+        stroke="url(#lG1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#sShadow)"/>
+      <!-- Underline accent -->
+      <line x1="10.5" y1="28.5" x2="33.5" y2="28.5" stroke="url(#lG2)" stroke-width="0.85" opacity="0.95"/>
+    </svg>
+    <div class="logo-divider"></div>
+    <div class="logo-text-wrap">
+      <span class="logo-wordmark">SellerMarketplace</span>
+      <span class="logo-tagline">Fine Silver Jewelry</span>
+    </div>
+  </a>
+
+  <nav>
+    <a onclick="showPage('home')">Collections</a>
+    <a onclick="showPage('home')">New Arrivals</a>
+    <a onclick="showPage('home')">Sale</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('care')">Care Guide</a>
+  </nav>
+  <button class="cart-btn" id="cartBtn">Cart (<span id="cartCount">0</span>)</button>
+</header>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-ring"></div><div class="hero-ring"></div><div class="hero-ring"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Artisan · 925 Sterling Silver · Handcrafted</p>
+      <h1 class="hero-title"><em>Silver</em><br>Jewelry</h1>
+      <p class="hero-sub">Timeless pieces for the modern soul</p>
+      <button class="hero-cta" onclick="document.querySelector('.catalog-section').scrollIntoView({behavior:'smooth'})">Explore Catalog</button>
+    </div>
+  </section>
+  <div class="marquee-wrap"><div class="marquee" id="marquee"></div></div>
+  <div class="filter-bar">
+    <span class="filter-label">Filter</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="rings">Rings</button>
+    <button class="filter-btn" data-filter="necklaces">Necklaces</button>
+    <button class="filter-btn" data-filter="earrings">Earrings</button>
+    <button class="filter-btn" data-filter="bracelets">Bracelets</button>
+    <button class="filter-btn" data-filter="pendants">Pendants</button>
+    <button class="filter-btn" data-filter="brooches">Brooches</button>
+    <div class="search-box">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search pieces...">
+    </div>
+  </div>
+  <section class="catalog-section">
+    <div class="section-header">
+      <h2 class="section-title">The Collection</h2>
+      <span class="section-count" id="itemCount">100 pieces</span>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Our Story</p>
+      <h1 class="text-page-title">About SellerMarketplace</h1>
+      <p class="text-page-sub">A curated marketplace connecting artisan silversmiths with customers who appreciate enduring craftsmanship.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Who We Are</h2>
+        <p>SellerMarketplace was founded on a single belief: that beautiful jewelry should not require a compromise between quality, authenticity, and value. We are a curated online marketplace specializing exclusively in 925 sterling silver jewelry sourced from independent artisan makers around the world.</p>
+        <p>Every seller on our platform is hand-vetted. We visit workshops, inspect hallmarking practices, and verify the origin of materials before any piece reaches our catalog. What you find here is the genuine work of skilled craftspeople — not mass-produced imitations.</p>
+      </div>
+      <div class="text-section"><h2>Our Values</h2>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-icon">⬡</div><h3>Authenticity</h3><p>Every piece is stamped 925 and comes with a certificate of material authenticity. No plating, no shortcuts.</p></div>
+          <div class="info-card"><div class="info-card-icon">◇</div><h3>Artisan-First</h3><p>We pay makers fairly and feature their stories alongside their work. Craft deserves recognition.</p></div>
+          <div class="info-card"><div class="info-card-icon">○</div><h3>Transparency</h3><p>We show you where pieces come from, how they're made, and what materials are used. Always.</p></div>
+          <div class="info-card"><div class="info-card-icon">△</div><h3>Longevity</h3><p>We curate for durability. Sterling silver, properly cared for, lasts a lifetime and improves with age.</p></div>
+        </div>
+      </div>
+      <div class="text-section"><h2>Our Artisans</h2>
+        <p>Our maker community spans over 30 countries. From traditional Balinese silversmithing studios to contemporary Scandinavian workshops, every artisan brings a distinct cultural perspective to their craft. We believe this diversity is what makes our catalog genuinely unique.</p>
+        <p>We work directly with artisans, eliminating middlemen so that more of what you spend goes to the maker. Our standard is simple: if we wouldn't gift it to someone we love, it doesn't belong in the catalog.</p>
+      </div>
+      <div class="text-section"><h2>The 925 Standard</h2>
+        <p>Sterling silver is an alloy of 92.5% pure silver and 7.5% other metals (typically copper), making it both workable and durable. The 925 hallmark is the international guarantee of this composition. All pieces on SellerMarketplace meet or exceed this standard and are independently verified before listing.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTISANS -->
+<div id="page-artisans" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">The Makers</p>
+      <h1 class="text-page-title">Our Artisans</h1>
+      <p class="text-page-sub">The skilled hands and creative minds behind every piece in our catalog.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Who Makes Our Jewelry</h2>
+        <p>SellerMarketplace is a platform built around people. Our artisans are independent craftspeople — men and women who have dedicated years, often decades, to mastering the art of silversmithing. Many come from multi-generational families of jewelers; others discovered the craft later in life and pursued it with singular focus.</p>
+        <p>We currently work with over 120 verified makers across six continents. Each one has passed our onboarding review, which includes material verification, hallmarking compliance, and a review of their workshop practices.</p>
+      </div>
+      <div class="text-section"><h2>Artisan Standards</h2>
+        <ul>
+          <li>All makers must use certified 925 sterling silver as their primary material.</li>
+          <li>Hallmarking must comply with the standards of the maker's home country, at minimum.</li>
+          <li>Artisans must produce work themselves or directly supervise small-team production. We do not list resellers or dropshippers.</li>
+          <li>Stone sourcing must be documented and conflict-free.</li>
+          <li>Makers are encouraged to provide provenance details, displayed on each product listing.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Become a Maker</h2>
+        <p>We are always looking to expand our maker community with talented silversmiths who share our commitment to quality and transparency. If you are a working silversmith and would like to apply to sell on SellerMarketplace, please reach out through our contact page. We review all applications personally and respond within 10 business days.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUSTAINABILITY -->
+<div id="page-sustainability" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Our Commitment</p>
+      <h1 class="text-page-title">Sustainability</h1>
+      <p class="text-page-sub">How we approach environmental and social responsibility across our supply chain.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Why It Matters</h2>
+        <p>The jewelry industry has a complicated history with sustainability. We don't claim to have solved these problems, but we take them seriously and hold ourselves to a clear set of standards that go beyond compliance.</p>
+      </div>
+      <div class="text-section"><h2>Materials</h2>
+        <ul>
+          <li>We prioritize artisans who use recycled or responsibly sourced silver wherever available.</li>
+          <li>All gemstones must come with documentation confirming they are conflict-free and ethically mined.</li>
+          <li>We avoid materials with known harmful extraction practices and audit suppliers annually.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Packaging</h2>
+        <ul>
+          <li>All SellerMarketplace packaging is made from recycled or FSC-certified materials.</li>
+          <li>We eliminated single-use plastic from our standard packaging in 2023.</li>
+          <li>Our jewelry pouches and boxes are reusable and designed to be kept.</li>
+          <li>Shipping filler materials are 100% compostable.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Longevity as Sustainability</h2>
+        <p>Perhaps the most sustainable thing we do is sell pieces designed to last a lifetime. Sterling silver, properly cared for, never needs to be replaced. We believe that buying one beautiful, durable piece is inherently more sustainable than buying ten disposable ones.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRESS -->
+<div id="page-press" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Media</p>
+      <h1 class="text-page-title">Press & Media</h1>
+      <p class="text-page-sub">Press inquiries, brand assets, and editorial information.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Press Inquiries</h2>
+        <p>For editorial features, interview requests, product loans, or general press inquiries, please contact our communications team. We aim to respond to all media requests within two business days.</p>
+        <p><strong style="color:var(--silver);">press@sellermarketplace.com</strong></p>
+      </div>
+      <div class="text-section"><h2>About the Company</h2>
+        <p>SellerMarketplace is an online marketplace specializing in handcrafted 925 sterling silver jewelry. We connect independent artisan makers with a global customer base seeking authentic, quality-verified silver pieces. Our catalog features products from artisans across more than 30 countries.</p>
+      </div>
+      <div class="text-section"><h2>Brand Assets</h2>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-icon">◻</div><h3>Logo Files</h3><p>Available in SVG, PNG, and EPS formats in both light and dark variants.</p></div>
+          <div class="info-card"><div class="info-card-icon">◻</div><h3>Product Images</h3><p>High-resolution product photography available for editorial use with attribution.</p></div>
+          <div class="info-card"><div class="info-card-icon">◻</div><h3>Brand Guidelines</h3><p>Full brand style guide including color palette, typography, and tone of voice documentation.</p></div>
+        </div>
+        <p style="margin-top:16px;">To request brand assets, email press@sellermarketplace.com with your publication name and intended use.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Get in Touch</p>
+      <h1 class="text-page-title">Contact Us</h1>
+      <p class="text-page-sub">We're here to help. Reach out and we'll get back to you within one business day.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Send Us a Message</h2>
+        <div class="contact-field"><label>Your Name</label><input type="text" placeholder="Full name"></div>
+        <div class="contact-field"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="contact-field"><label>Subject</label>
+          <select><option>Order Inquiry</option><option>Returns &amp; Exchanges</option><option>Product Question</option><option>Artisan Application</option><option>Press Inquiry</option><option>Other</option></select>
+        </div>
+        <div class="contact-field"><label>Message</label><textarea placeholder="How can we help you?"></textarea></div>
+        <button class="submit-btn" onclick="alert('Message sent! We\'ll be in touch within one business day.')">Send Message</button>
+      </div>
+      <div class="text-section"><h2>Other Ways to Reach Us</h2>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-icon">✉</div><h3>General</h3><p>hello@sellermarketplace.com<br>Mon–Fri, 9am–6pm EST</p></div>
+          <div class="info-card"><div class="info-card-icon">↩</div><h3>Returns</h3><p>returns@sellermarketplace.com<br>Response within 24 hours</p></div>
+          <div class="info-card"><div class="info-card-icon">◎</div><h3>Press</h3><p>press@sellermarketplace.com<br>Response within 2 business days</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIZE GUIDE -->
+<div id="page-size" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Fit &amp; Sizing</p>
+      <h1 class="text-page-title">Size Guide</h1>
+      <p class="text-page-sub">Find your perfect fit for rings, bracelets, and necklaces.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Ring Sizes</h2>
+        <p>Measure the inner circumference of an existing ring that fits well, or wrap a thin strip of paper around your finger and measure the length in millimeters.</p>
+        <table class="size-table"><thead><tr><th>US Size</th><th>EU Size</th><th>Circumference (mm)</th><th>Diameter (mm)</th></tr></thead>
+        <tbody>
+          <tr><td>4</td><td>47</td><td>46.8</td><td>14.9</td></tr>
+          <tr><td>5</td><td>49</td><td>49.3</td><td>15.7</td></tr>
+          <tr><td>6</td><td>52</td><td>51.9</td><td>16.5</td></tr>
+          <tr><td>7</td><td>54</td><td>54.4</td><td>17.3</td></tr>
+          <tr><td>8</td><td>57</td><td>57.0</td><td>18.1</td></tr>
+          <tr><td>9</td><td>59</td><td>59.5</td><td>18.9</td></tr>
+          <tr><td>10</td><td>62</td><td>62.1</td><td>19.8</td></tr>
+          <tr><td>11</td><td>64</td><td>64.6</td><td>20.6</td></tr>
+          <tr><td>12</td><td>67</td><td>67.2</td><td>21.4</td></tr>
+        </tbody></table>
+      </div>
+      <div class="text-section"><h2>Bracelet Sizes</h2>
+        <table class="size-table"><thead><tr><th>Size</th><th>Wrist Circumference</th><th>Bracelet Length</th></tr></thead>
+        <tbody>
+          <tr><td>XS</td><td>13–14 cm</td><td>15 cm</td></tr>
+          <tr><td>S</td><td>14–15.5 cm</td><td>16.5 cm</td></tr>
+          <tr><td>M</td><td>15.5–17 cm</td><td>18 cm</td></tr>
+          <tr><td>L</td><td>17–18.5 cm</td><td>19.5 cm</td></tr>
+          <tr><td>XL</td><td>18.5–20 cm</td><td>21 cm</td></tr>
+        </tbody></table>
+      </div>
+      <div class="text-section"><h2>Necklace Lengths</h2>
+        <ul>
+          <li><strong style="color:var(--silver);">14" (35 cm)</strong> — Choker length, sits above the collarbone.</li>
+          <li><strong style="color:var(--silver);">16" (40 cm)</strong> — Collarbone length, the most universally flattering.</li>
+          <li><strong style="color:var(--silver);">18" (45 cm)</strong> — Standard length, sits just below the collarbone.</li>
+          <li><strong style="color:var(--silver);">20" (50 cm)</strong> — Falls at the top of the chest. Great for pendants.</li>
+          <li><strong style="color:var(--silver);">24" (60 cm)</strong> — Opera length. Sits mid-chest to sternum.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARE -->
+<div id="page-care" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Aftercare</p>
+      <h1 class="text-page-title">Care & Polish</h1>
+      <p class="text-page-sub">How to keep your sterling silver looking beautiful for years to come.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Understanding Tarnish</h2>
+        <p>Sterling silver naturally tarnishes over time when exposed to air, moisture, and certain chemicals. This is a completely normal chemical reaction — silver reacts with sulfur compounds in the air to form silver sulfide. Tarnish is not damage; it is easily removed and does not affect the integrity of the silver.</p>
+      </div>
+      <div class="text-section"><h2>Daily Care Tips</h2>
+        <ul>
+          <li>Put jewelry on last when getting ready — after applying perfume, lotions, and hairspray.</li>
+          <li>Remove silver before swimming, bathing, or using cleaning products. Chlorine accelerates tarnishing.</li>
+          <li>Wipe pieces with a soft, dry cloth after wearing to remove skin oils and residue.</li>
+          <li>Remove rings before washing hands or doing dishes whenever possible.</li>
+          <li>Avoid wearing silver jewelry during exercise — perspiration accelerates tarnish.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Cleaning Your Silver</h2>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-card-icon">○</div><h3>Polishing Cloth</h3><p>For light tarnish, a silver polishing cloth (included with every order) is all you need. Gentle circular motions restore shine in minutes.</p></div>
+          <div class="info-card"><div class="info-card-icon">◇</div><h3>Soap &amp; Water</h3><p>For a deeper clean, use mild dish soap in warm water. Gently scrub with a soft toothbrush, rinse thoroughly, and dry completely.</p></div>
+          <div class="info-card"><div class="info-card-icon">△</div><h3>Silver Polish</h3><p>For heavy tarnish, a specialized silver polish cream applied with a soft cloth will restore the original shine.</p></div>
+          <div class="info-card"><div class="info-card-icon">⬡</div><h3>Avoid</h3><p>Never use bleach, toothpaste, or ultrasonic cleaners on silver with stones or intricate detailing.</p></div>
+        </div>
+      </div>
+      <div class="text-section"><h2>Storage</h2>
+        <ul>
+          <li>Store silver in a cool, dry place away from direct sunlight and humidity.</li>
+          <li>Keep pieces in individual pouches or compartments to prevent scratching.</li>
+          <li>Anti-tarnish strips placed in your jewelry box will significantly slow tarnish development.</li>
+          <li>Avoid storing silver in rubber or wool — both contain sulfur compounds that accelerate tarnish.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RETURNS -->
+<div id="page-returns" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Our Policy</p>
+      <h1 class="text-page-title">Returns &amp; Exchanges</h1>
+      <p class="text-page-sub">We stand behind every piece we sell. Your satisfaction is our guarantee.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>30-Day Return Policy</h2>
+        <p>We offer a full 30-day return window on all unworn, unaltered pieces in their original condition and packaging. If you are not completely satisfied with your purchase for any reason, we will issue a full refund to your original payment method.</p>
+        <p>To initiate a return, contact our team at returns@sellermarketplace.com with your order number and reason for return. We will provide a prepaid return shipping label within one business day.</p>
+      </div>
+      <div class="text-section"><h2>Exchanges</h2>
+        <p>We are happy to exchange pieces for a different size or style within 30 days of delivery, subject to availability.</p>
+        <ul>
+          <li>One exchange per order is permitted.</li>
+          <li>Shipping on exchanges is free for orders over $75. A flat $8 fee applies to smaller orders.</li>
+          <li>Custom or personalized pieces cannot be exchanged unless they arrive damaged.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Damaged or Defective Items</h2>
+        <p>If your item arrives damaged or with a manufacturing defect, please contact us within 7 days of delivery with photos. We will arrange a free return and ship a replacement at no charge, or issue a full refund — your choice.</p>
+      </div>
+      <div class="text-section"><h2>Non-Returnable Items</h2>
+        <ul>
+          <li>Items that have been worn, altered, or resized.</li>
+          <li>Custom or engraved pieces (unless defective).</li>
+          <li>Items returned after the 30-day window without prior authorization.</li>
+          <li>Gift cards.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHIPPING -->
+<div id="page-shipping" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Delivery</p>
+      <h1 class="text-page-title">Shipping</h1>
+      <p class="text-page-sub">Fast, insured delivery for every piece. Free shipping on orders over $75.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>Domestic Shipping (USA)</h2>
+        <table class="size-table"><thead><tr><th>Method</th><th>Estimated Delivery</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Standard</td><td>5–7 business days</td><td>Free over $75 / $5.99</td></tr>
+          <tr><td>Expedited</td><td>2–3 business days</td><td>$12.99</td></tr>
+          <tr><td>Overnight</td><td>Next business day</td><td>$24.99</td></tr>
+        </tbody></table>
+      </div>
+      <div class="text-section"><h2>International Shipping</h2>
+        <table class="size-table"><thead><tr><th>Region</th><th>Estimated Delivery</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Canada &amp; Mexico</td><td>7–10 business days</td><td>$14.99</td></tr>
+          <tr><td>Europe</td><td>8–14 business days</td><td>$19.99</td></tr>
+          <tr><td>UK &amp; Australia</td><td>10–16 business days</td><td>$19.99</td></tr>
+          <tr><td>Rest of World</td><td>14–21 business days</td><td>$24.99</td></tr>
+        </tbody></table>
+        <p>International customers are responsible for any applicable customs duties or import taxes.</p>
+      </div>
+      <div class="text-section"><h2>Packaging &amp; Insurance</h2>
+        <ul>
+          <li>All orders are packaged in our signature gift-ready box with a polishing cloth and care card included.</li>
+          <li>Every shipment is fully insured for the purchase value at no extra cost.</li>
+          <li>Tracking information is emailed immediately upon dispatch.</li>
+          <li>Signature may be required for orders over $200.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div id="page-faq" class="page">
+  <div class="text-page">
+    <div class="text-page-hero">
+      <p class="text-page-eyebrow">Help Center</p>
+      <h1 class="text-page-title">Frequently Asked Questions</h1>
+      <p class="text-page-sub">Answers to common questions about our products, orders, and policies.</p>
+    </div>
+    <div class="text-page-body">
+      <button class="back-btn" onclick="showPage('home')">← Back to Collection</button>
+      <div class="text-section"><h2>About Our Silver</h2>
+        <ul>
+          <li><strong style="color:var(--silver);">Is all your jewelry really 925 sterling silver?</strong> Yes. Every piece is hallmarked 925 and independently verified before listing. A certificate of authenticity is included with every order.</li>
+          <li><strong style="color:var(--silver);">Will sterling silver turn my skin green?</strong> Genuine 925 sterling silver does not turn skin green. Skin discoloration is caused by lower-quality alloys.</li>
+          <li><strong style="color:var(--silver);">Are the gemstones real?</strong> All natural stone listings explicitly state the stone type and origin. Cubic zirconia is always clearly labeled where used.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Orders &amp; Payment</h2>
+        <ul>
+          <li><strong style="color:var(--silver);">What payment methods do you accept?</strong> We accept Visa, Mastercard, American Express, PayPal, Apple Pay, and Google Pay.</li>
+          <li><strong style="color:var(--silver);">Can I modify or cancel my order?</strong> Orders can be modified or cancelled within 2 hours of placement. Contact us immediately if you need to make a change.</li>
+          <li><strong style="color:var(--silver);">Do you offer gift wrapping?</strong> All orders arrive in our gift-ready packaging. A personal message card can be added at checkout for $4.99.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Shipping &amp; Delivery</h2>
+        <ul>
+          <li><strong style="color:var(--silver);">How long does shipping take?</strong> Standard domestic shipping is 5–7 business days. See our Shipping page for all options.</li>
+          <li><strong style="color:var(--silver);">Do you ship internationally?</strong> Yes, we ship to over 60 countries. International delivery times vary by region.</li>
+          <li><strong style="color:var(--silver);">How do I track my order?</strong> A tracking link is sent to your email as soon as your order ships.</li>
+        </ul>
+      </div>
+      <div class="text-section"><h2>Care &amp; Longevity</h2>
+        <ul>
+          <li><strong style="color:var(--silver);">How do I clean my silver jewelry?</strong> A polishing cloth included with your order handles everyday cleaning. See our Care &amp; Polish page for full guidance.</li>
+          <li><strong style="color:var(--silver);">My silver has tarnished. Is it defective?</strong> No — tarnishing is a natural property of sterling silver and is easily reversed with a polishing cloth.</li>
+          <li><strong style="color:var(--silver);">Do you offer repairs?</strong> We partner with certified silversmiths for repairs. Contact us with your order details and we'll connect you with the right service.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo-wrap" onclick="showPage('home')">
+      <svg width="148" height="40" viewBox="0 0 148 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fG" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#C8C8C8"/><stop offset="100%" stop-color="#888888"/>
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="18" stroke="url(#fG)" stroke-width="0.9" opacity="0.5"/>
+        <circle cx="20" cy="20" r="14.5" stroke="#D4AF6E" stroke-width="0.65" stroke-dasharray="3 2.5" opacity="0.75"/>
+        <path d="M11 17C11 15 12.4 13.5 14.2 13.5H17C18.3 13.5 19 14.3 19 15.5C19 16.7 18.2 17.5 17 17.5H13.8C12.4 17.5 11.5 18.6 11.5 20C11.5 21.4 12.5 22.5 13.8 22.5H17C18.3 22.5 19 21.2 19 21.2"
+          stroke="url(#fG)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <path d="M21.5 22.5L21.5 13.5L25 19.5L28.5 13.5L28.5 22.5"
+          stroke="url(#fG)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line x1="10" y1="27" x2="30" y2="27" stroke="#D4AF6E" stroke-width="0.75" opacity="0.85"/>
+        <text x="38" y="16" font-family="Georgia, serif" font-size="13.5" fill="#C8C8C8" letter-spacing="1.2">SellerMarketplace</text>
+        <text x="39" y="28" font-family="Arial, sans-serif" font-size="6.5" fill="#D4AF6E" letter-spacing="3.2">FINE SILVER JEWELRY</text>
+      </svg>
+    </div>
+    <p>Curating the finest sterling silver jewelry from artisan craftspeople worldwide. Every piece is hallmarked 925 and comes with a certificate of authenticity.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Shop</h4>
+    <a onclick="showPage('home')">New Arrivals</a>
+    <a onclick="showPage('home')">Rings</a>
+    <a onclick="showPage('home')">Necklaces</a>
+    <a onclick="showPage('home')">Earrings</a>
+    <a onclick="showPage('home')">Bracelets</a>
+    <a onclick="showPage('home')">Sale</a>
+  </div>
+  <div class="footer-col">
+    <h4>Support</h4>
+    <a onclick="showPage('size')">Size Guide</a>
+    <a onclick="showPage('care')">Care &amp; Polish</a>
+    <a onclick="showPage('returns')">Returns</a>
+    <a onclick="showPage('shipping')">Shipping</a>
+    <a onclick="showPage('faq')">FAQ</a>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <a onclick="showPage('about')">About Us</a>
+    <a onclick="showPage('artisans')">Artisans</a>
+    <a onclick="showPage('sustainability')">Sustainability</a>
+    <a onclick="showPage('press')">Press</a>
+    <a onclick="showPage('contact')">Contact</a>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 SellerMarketplace · All pieces are 925 Sterling Silver · Free shipping over $75</p>
+  <p>Visa · Mastercard · PayPal · Apple Pay</p>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-image" id="modalImage"></div>
+    <div class="modal-details">
+      <p class="modal-category" id="modalCategory"></p>
+      <h2 class="modal-name" id="modalName"></h2>
+      <p class="modal-price" id="modalPrice"></p>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-specs" id="modalSpecs"></div>
+      <button class="modal-buy-btn" id="modalBuyBtn">Add to Cart</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast">Added to cart ✓</div>
+
+<script>
+// ROUTING
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + id);
+  if (el) { el.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+}
+
+// SVG GENERATORS
+function rsg(id) {
+  const s = [['#F5F5F5','#A8A8A8','#E0E0E0'],['#E8E8E8','#909090','#D0D0D0'],['#FFFFFF','#C0C0C0','#808080'],['#DCDCDC','#B0B0B0','#F0F0F0']][Math.floor(Math.random()*4)];
+  return `<defs><linearGradient id="sg${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${s[0]}"/><stop offset="50%" stop-color="${s[1]}"/><stop offset="100%" stop-color="${s[2]}"/></linearGradient><radialGradient id="rg${id}" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#F8F8F8" stop-opacity="0.9"/><stop offset="100%" stop-color="#707070" stop-opacity="0.6"/></radialGradient><filter id="sh${id}"><feDropShadow dx="2" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/></filter></defs>`;
+}
+const svgG = {
+  rings: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<ellipse cx="100" cy="100" rx="70" ry="35" fill="none" stroke="url(#sg${id})" stroke-width="18" filter="url(#sh${id})"/><ellipse cx="100" cy="100" rx="70" ry="35" fill="none" stroke="url(#rg${id})" stroke-width="6"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<ellipse cx="100" cy="115" rx="65" ry="30" fill="none" stroke="url(#sg${id})" stroke-width="16" filter="url(#sh${id})"/><polygon points="100,60 115,82 135,80 122,95 128,115 100,102 72,115 78,95 65,80 85,82" fill="url(#sg${id})" stroke="#ddd" stroke-width="1"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<ellipse cx="100" cy="108" rx="65" ry="32" fill="none" stroke="url(#sg${id})" stroke-width="20" filter="url(#sh${id})"/><ellipse cx="100" cy="88" rx="60" ry="22" fill="none" stroke="url(#sg${id})" stroke-width="12"/></svg>`][id%3],
+  necklaces: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<path d="M40,40 Q100,20 160,40 Q150,100 100,130 Q50,100 40,40" fill="none" stroke="url(#sg${id})" stroke-width="4" filter="url(#sh${id})"/><circle cx="100" cy="130" r="18" fill="url(#sg${id})" stroke="#CCC" stroke-width="1.5"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<path d="M30,50 Q100,30 170,50" fill="none" stroke="url(#sg${id})" stroke-width="3" filter="url(#sh${id})"/><path d="M45,80 Q100,55 155,80" fill="none" stroke="url(#sg${id})" stroke-width="3"/><path d="M60,110 Q100,88 140,110" fill="none" stroke="url(#sg${id})" stroke-width="3"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<path d="M25,95 Q100,75 175,95" fill="none" stroke="url(#sg${id})" stroke-width="10" filter="url(#sh${id})"/><circle cx="65" cy="91" r="5" fill="url(#rg${id})"/><circle cx="100" cy="87" r="7" fill="url(#rg${id})"/><circle cx="135" cy="91" r="5" fill="url(#rg${id})"/></svg>`][id%3],
+  earrings: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<circle cx="65" cy="45" r="8" fill="url(#sg${id})" filter="url(#sh${id})"/><line x1="65" y1="53" x2="65" y2="85" stroke="url(#sg${id})" stroke-width="3"/><ellipse cx="65" cy="115" rx="22" ry="32" fill="url(#sg${id})"/><circle cx="135" cy="45" r="8" fill="url(#sg${id})" filter="url(#sh${id})"/><line x1="135" y1="53" x2="135" y2="85" stroke="url(#sg${id})" stroke-width="3"/><ellipse cx="135" cy="115" rx="22" ry="32" fill="url(#sg${id})"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<circle cx="65" cy="105" r="40" fill="none" stroke="url(#sg${id})" stroke-width="10" filter="url(#sh${id})"/><circle cx="135" cy="105" r="40" fill="none" stroke="url(#sg${id})" stroke-width="10"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<circle cx="65" cy="100" r="30" fill="url(#sg${id})" filter="url(#sh${id})"/><circle cx="65" cy="100" r="18" fill="url(#rg${id})"/><circle cx="135" cy="100" r="30" fill="url(#sg${id})" filter="url(#sh${id})"/><circle cx="135" cy="100" r="18" fill="url(#rg${id})"/></svg>`][id%3],
+  bracelets: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<ellipse cx="100" cy="100" rx="75" ry="40" fill="none" stroke="url(#sg${id})" stroke-width="14" filter="url(#sh${id})"/><ellipse cx="100" cy="100" rx="75" ry="40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<path d="M20,100 Q100,70 180,100" fill="none" stroke="url(#sg${id})" stroke-width="5" filter="url(#sh${id})"/>${[30,55,80,100,120,145,170].map(x=>`<circle cx="${x}" cy="${100-Math.sin((x-20)/160*Math.PI)*15}" r="5" fill="url(#sg${id})"/>`).join('')}</svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<path d="M30,70 Q100,55 170,70 L165,130 Q100,145 35,130 Z" fill="url(#sg${id})" filter="url(#sh${id})"/></svg>`][id%3],
+  pendants: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<line x1="100" y1="30" x2="100" y2="55" stroke="url(#sg${id})" stroke-width="3"/><polygon points="100,60 110,85 140,85 118,102 126,128 100,112 74,128 82,102 60,85 90,85" fill="url(#sg${id})" filter="url(#sh${id})"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<line x1="100" y1="30" x2="100" y2="55" stroke="url(#sg${id})" stroke-width="3"/><path d="M100,75 C65,60 65,90 65,90 C65,110 100,140 100,140C100,140 135,110 135,90C135,60 100,75 100,75Z" fill="url(#sg${id})" filter="url(#sh${id})"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<line x1="100" y1="30" x2="100" y2="55" stroke="url(#sg${id})" stroke-width="3"/><path d="M90,65 A45,45 0 1 0 90,145 A30,30 0 1 1 90,65Z" fill="url(#sg${id})" filter="url(#sh${id})"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<line x1="100" y1="30" x2="100" y2="55" stroke="url(#sg${id})" stroke-width="3"/><rect x="88" y="60" width="24" height="80" rx="4" fill="url(#sg${id})" filter="url(#sh${id})"/><rect x="65" y="90" width="70" height="22" rx="4" fill="url(#sg${id})"/></svg>`][id%4],
+  brooches: id => [`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}${[0,60,120,180,240,300].map(a=>`<ellipse cx="100" cy="100" rx="30" ry="12" fill="url(#sg${id})" transform="rotate(${a} 100 100)" opacity="0.9"/>`).join('')}<circle cx="100" cy="100" r="16" fill="url(#rg${id})" filter="url(#sh${id})"/></svg>`,`<svg viewBox="0 0 200 200" class="jewelry-svg">${rsg(id)}<ellipse cx="72" cy="100" rx="38" ry="26" fill="url(#sg${id})" filter="url(#sh${id})"/><ellipse cx="128" cy="100" rx="38" ry="26" fill="url(#sg${id})"/><circle cx="100" cy="100" r="14" fill="url(#rg${id})"/></svg>`][id%2],
+};
+
+// DATA
+const cats = ['rings','necklaces','earrings','bracelets','pendants','brooches'];
+const names = {rings:['Moonlit Band','Solstice Solitaire','Twisted Vine Ring','Aurora Cluster','Eternity Band','Serpent Coil','Midnight Signet','Celestial Stack','Snowflake Ring','Gothic Arch Ring'],necklaces:['Cascade Choker','Luna Chain','Starfall Necklace','Waterfall Strand','Heritage Lariat','Dew Drop Chain','Orbit Collar','Whisper Necklace','Constellation Chain','Silver Veil'],earrings:['Crescent Drops','Lunar Hoops','Pavé Studs','Cascade Dangles','Orbit Hoops','Dewdrop Ear Pins','Raindrop Hoops','Stardust Drops','Teardrop Swings','Wing Studs'],bracelets:['Heritage Bangle','Chain Mail Wrap','Hammered Cuff','Infinity Bracelet','Celtic Knot Cuff','Feather Bangle','Dainty Link Chain','Satellite Bracelet','Snake Chain Bangle','River Cuff'],pendants:['Crescent Moon','Northern Star','Sacred Heart','Celestial Cross','Dagger Charm','Tree of Life','Anchor Drop','Hamsa Hand','Lotus Charm','Arrow Pendant'],brooches:['Magnolia Bloom','Vintage Bow','Peacock Fan','Laurel Wreath','Art Deco Shield','Hummingbird Pin','Snowflake Burst','Fleur-de-lis','Compass Rose','Iris Spray']};
+const adjs = ['Handcrafted','Artisan','Heritage','Vintage-Inspired','Minimalist','Ornate','Delicate','Bold','Classic','Modern'];
+const fins = ['Brushed','Polished','Hammered','Oxidized','Satin','Mirror-Finish'];
+const stones = ['','with Moonstone','with Labradorite','with Onyx','with Turquoise','with Pearl','with Garnet','with Topaz','with Amethyst','with Cubic Zirconia'];
+const descs = ['Handcrafted from 925 sterling silver by skilled artisans, this piece combines timeless elegance with modern sensibility. The intricate detailing reflects hours of careful craftsmanship.','A stunning example of silversmithing artistry. Each curve and surface has been carefully considered to create a piece that catches the light beautifully and flatters every wearer.','Born from the tradition of European silversmithing, updated for contemporary tastes. The 925 hallmark guarantees quality you can trust and pass down through generations.','Inspired by celestial forms and natural geometry, this silver piece carries meaning as well as beauty. Wear it as a daily reminder of what matters most to you.','Forged from solid 925 sterling silver and finished by hand, this piece develops a rich patina over time that only deepens its character and story.'];
+const badges = ['new','sale','bestseller',null,null,null,null,null];
+const r = (a,b) => Math.floor(Math.random()*(b-a)+a);
+const products = Array.from({length:100},(_,i)=>{
+  const cat=cats[i%cats.length], n=names[cat], price=r(29,399), badge=badges[r(0,8)];
+  return {id:i+1,name:`${adjs[r(0,10)]} ${n[r(0,n.length)]} ${stones[r(0,10)]}`.trim(),category:cat,price,oldPrice:badge==='sale'?price+r(20,80):null,badge,rating:parseFloat((3.5+Math.random()*1.5).toFixed(1)),numRatings:r(10,310),finish:fins[r(0,6)],desc:descs[r(0,5)],weight:(Math.random()*15+2).toFixed(1)+'g',size:cat==='rings'?`US ${r(4,12)}–${r(10,14)}`:cat==='bracelets'?`${(Math.random()*3+16).toFixed(1)}cm`:cat==='necklaces'?`${r(14,26)}"`:'One Size'};
+});
+
+let cart=0, currentFilter='all';
+function stars(r){let h='';for(let i=1;i<=5;i++)h+=`<span class="star${i<=Math.round(r)?'':' empty'}">★</span>`;return h;}
+function getSVG(p){return (svgG[p.category]||svgG.pendants)(p.id);}
+
+function renderCard(p) {
+  const el=document.createElement('div');
+  el.className='product-card fade-in';
+  const badge=p.badge?`<span class="card-badge badge-${p.badge}">${p.badge==='bestseller'?'⭐ Best Seller':p.badge.toUpperCase()}</span>`:'';
+  const price=p.oldPrice?`$${p.price}<span class="card-price-old">$${p.oldPrice}</span>`:`$${p.price}`;
+  el.innerHTML=`<div class="card-image"><div class="card-image-inner">${getSVG(p)}</div>${badge}<div class="card-overlay"><button class="add-to-cart">Add to Cart</button></div></div><div class="card-info"><p class="card-category">${p.category}</p><p class="card-name">${p.name}</p><div class="card-meta"><span class="card-price">${price}</span><div class="card-rating">${stars(p.rating)}</div></div></div>`;
+  el.querySelector('.add-to-cart').addEventListener('click',e=>{e.stopPropagation();addToCart(p.name);});
+  el.addEventListener('click',()=>openModal(p));
+  return el;
+}
+
+function renderGrid(items){
+  const g=document.getElementById('productGrid');g.innerHTML='';
+  document.getElementById('itemCount').textContent=`${items.length} piece${items.length!==1?'s':''}`;
+  items.forEach(p=>g.appendChild(renderCard(p)));observeFade();
+}
+
+function filterProducts(){
+  const s=document.getElementById('searchInput').value.toLowerCase();
+  return products.filter(p=>(currentFilter==='all'||p.category===currentFilter)&&(!s||p.name.toLowerCase().includes(s)||p.category.includes(s)));
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); currentFilter=btn.dataset.filter; renderGrid(filterProducts());
+  });
+});
+document.getElementById('searchInput').addEventListener('input',()=>renderGrid(filterProducts()));
+
+function openModal(p){
+  document.getElementById('modalImage').innerHTML=getSVG(p);
+  document.getElementById('modalCategory').textContent=p.category;
+  document.getElementById('modalName').textContent=p.name;
+  document.getElementById('modalPrice').textContent=p.oldPrice?`$${p.price}  (was $${p.oldPrice})`:`$${p.price}`;
+  document.getElementById('modalDesc').textContent=p.desc;
+  document.getElementById('modalSpecs').innerHTML=`<div class="modal-spec"><span class="modal-spec-key">Material</span><span class="modal-spec-val">925 Sterling Silver</span></div><div class="modal-spec"><span class="modal-spec-key">Finish</span><span class="modal-spec-val">${p.finish}</span></div><div class="modal-spec"><span class="modal-spec-key">Weight</span><span class="modal-spec-val">${p.weight}</span></div><div class="modal-spec"><span class="modal-spec-key">Size</span><span class="modal-spec-val">${p.size}</span></div><div class="modal-spec"><span class="modal-spec-key">Rating</span><span class="modal-spec-val">${p.rating} ★ (${p.numRatings} reviews)</span></div>`;
+  document.getElementById('modalBuyBtn').onclick=()=>{addToCart(p.name);closeModal();};
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+document.getElementById('modalClose').addEventListener('click',closeModal);
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal();});
+
+function addToCart(name){
+  cart++;document.getElementById('cartCount').textContent=cart;
+  const t=document.getElementById('toast');t.textContent=`${name} added to cart ✓`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+const mItems=['925 Sterling Silver','Handcrafted with Care','Free Shipping Over $75','30-Day Returns','Certified Authenticity','Tarnish Resistant','Artisan Made','Hallmarked 925','Lifetime Polish Guarantee','Ethically Sourced'];
+document.getElementById('marquee').innerHTML=[...mItems,...mItems].map(t=>`<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');
+
+function observeFade(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.1});
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+}
+
+renderGrid(products);
+</script>
+</body>
+</html>
